@@ -1,5 +1,7 @@
 package com.lambdaschool.sampleemps.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class JobTitle
     private String title;
 
     @ManyToMany(mappedBy = "jobtitles")
+    @JsonIgnoreProperties("jobtitles") // we want to ignore, not display, the jobtitles collection from Employee
     private Set<Employee> employees = new HashSet<>();
 
     public JobTitle()

@@ -1,5 +1,7 @@
 package com.lambdaschool.sampleemps.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +32,6 @@ public class Employee
 
     private double salary;
 
-    @ManyToMany()
     /*
      * Note: JoinTable is the name of a table that will get created in the database combining the two primary keys making up this relationship
      *       joinColumn is the primary key of the main, driving, table
@@ -40,16 +41,19 @@ public class Employee
      * only contain unique values. By using Sets we do not have to do a lot of extra coding to enforce uniqueness.
      * We can treat the HashSet very similar to ArrayLists. Differences will be highlighted throughout the course
      */
+    @ManyToMany()
     @JoinTable(name = "employeetitles",
             joinColumns = @JoinColumn(name = "employeeid"),
             inverseJoinColumns = @JoinColumn(name = "jobtitleid"))
+    @JsonIgnoreProperties("employees") //we want to ignore, not display, the employees collection found in JobTitle
     Set<JobTitle> jobtitles = new HashSet<>();
 
+    // when adding, reading, updating, and delete, the operations should affect the emails table as well)
+    // if we find a email that has a reference to an employee that does not exist, delete that email record
     @OneToMany(mappedBy = "employee",
             cascade = CascadeType.ALL,
-            // when adding, reading, updating, and delete, the operations should affect the emails table as well)
             orphanRemoval = true)
-    // if we find a email that has a reference to an employee that does not exist, delete that email record
+    @JsonIgnoreProperties("employee") //we want to ignore, not display, the employee object found in Email
     private List<Email> emails = new ArrayList<>();
 
     public Employee()
